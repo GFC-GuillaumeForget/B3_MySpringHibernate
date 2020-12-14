@@ -1,0 +1,103 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xmlns:aop="http://www.springframework.org/schema/aop"
+    xmlns:tx="http://www.springframework.org/schema/tx"
+    xsi:schemaLocation="http://www.springframework.org/schema/beans
+        http://www.springframework.org/schema/beans/spring-beans-2.5.xsd
+        http://www.springframework.org/schema/tx
+        http://www.springframework.org/schema/tx/spring-tx.xsd
+        http://www.springframework.org/schema/aop 
+        http://www.springframework.org/schema/aop/spring-aop-2.5.xsd"
+	   default-autowire="byName"
+>
+
+    <!--  Déclaration du PropertyPlaceholderConfigurer -->
+	<bean
+		class="org.springframework.beans.factory.config.PropertyPlaceholderConfigurer">
+		<property name="locations">
+			<list>
+				<value>db.properties</value>
+			</list>
+		</property>
+	</bean>
+
+    
+<!--  Déclaration de la DATASOURCES -->
+	
+	<bean id="datasource1"
+		class="org.springframework.jdbc.datasource.DriverManagerDataSource">
+		<property name="driverClassName" value="com.mysql.jdbc.Driver" />
+		<property name="url" value="jdbc:mysql://localhost/formation" />
+		<property name="username" value="root" />
+		<property name="password" value="" />
+	</bean>
+	
+	
+	<!--<bean id="datasource2" destroy-method="close"
+		class="org.apache.commons.dbcp.BasicDataSource">
+		<property name="driverClassName" value="${db.driver}" />
+		<property name="url" value="${db.url}" />
+		<property name="username" value="${db.username}" />
+		<property name="password" value="${db.password}" />
+	</bean>-->
+
+
+<!--  Déclaration Session Factory -->
+
+	<bean id="sessionFactory" class="org.springframework.orm.hibernate5.LocalSessionFactoryBean">
+		<property name="dataSource" ref="datasource1" />
+		<property name="mappingResources">
+			<list>
+				<value>Employe.hbm.xml</value>
+			</list>
+		</property>
+		<property name="hibernateProperties">
+			<props>
+				<prop key="hibernate.dialect">
+					org.hibernate.dialect.MySQLDialect
+				</prop>
+				<!--<prop key="hibernate.current_session_context_class">thread</prop>-->
+			</props>
+		</property>
+	</bean>
+	
+	
+<!--  Déclaration Template Hibernate -->
+
+	<bean id="hibernateTemplate"
+		class="org.springframework.orm.hibernate5.HibernateTemplate">
+		<property name="sessionFactory" ref="sessionFactory" />
+		<property name="checkWriteOperations" value="false"></property>
+	</bean>
+
+<!--  Déclaration des DAO Hibernate-->
+
+	<bean id="hibernateEmployeTemplateDao"
+		class="com.spring.dao.hibernate.HibernateEmployeTemplateDao">
+		<property name="hibernateTemplate" ref="hibernateTemplate" />
+	</bean>
+
+	<bean id="hibernateEmployeDaoSupport"
+		class="com.spring.dao.hibernate.HibernateEmployeDaoSupport">
+		<property name="sessionFactory" ref="sessionFactory" />
+	</bean>
+
+
+<!-- necessaires pour activer ecriture -->
+	<bean id="txManager"
+		  class="org.springframework.orm.hibernate5.HibernateTransactionManager">
+		<property name="sessionFactory" ref="sessionFactory" />
+	</bean>
+	<bean id="transactionManager" class="org.springframework.orm.hibernate5.HibernateTransactionManager">
+		<property name="sessionFactory" ref="sessionFactory"/>
+	</bean>
+	<tx:advice id="txAdvice" transaction-manager="txManager">
+		<tx:attributes>
+			<tx:method name="get*" read-only="true" />
+			<tx:method name="*" />
+		</tx:attributes>
+	</tx:advice>
+	<tx:annotation-driven/>
+
+</beans>

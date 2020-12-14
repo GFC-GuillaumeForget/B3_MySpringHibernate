@@ -1,0 +1,17 @@
+<?xml version="1.0"?>
+<!DOCTYPE hibernate-mapping
+        PUBLIC "-//Hibernate/Hibernate Mapping DTD 3.0//EN"
+        "http://hibernate.sourceforge.net/hibernate-mapping-3.0.dtd">
+<hibernate-mapping>
+    <class name="domaine.Employe" table="employe">
+        <id name="id" column="ID">
+            <generator class="native"/>
+        </id>
+        <property name="login" type="string" />
+        <property name="password" type="string" />
+        <property name="nom" type="string" />
+        <property name="prenom" type="string" />
+        <property name="email" type="string" />
+        <property name="role" type="string" />
+    </class>
+</hibernate-mapping>

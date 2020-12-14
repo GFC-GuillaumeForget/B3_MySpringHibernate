@@ -1,0 +1,9 @@
+com\spring\dao\hibernate\HibernateEmployeDaoSupport.class
+domaine\Employe2.class
+domaine\Employe.class
+Main2.class
+Main.class
+com\spring\dao\IEmployeDao.class
+com\spring\dao\hibernate\HibernateEmployeTemplateDao.class
+com\spring\dao\hibernate\HibernateEmployeTemplateDao2.class
+com\spring\dao\IEmployeDao2.class
